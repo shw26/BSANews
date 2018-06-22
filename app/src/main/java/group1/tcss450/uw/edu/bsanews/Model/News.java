@@ -49,15 +49,15 @@ public class News implements Serializable {
      * @throws JSONException
      */
     private void create(JSONObject json) throws JSONException{
-            mName = json.getString("name");
+            mName = json.getString("title");
             mUrl = json.getString("url");
             mDescription = json.getString("description");
-
-            if(json.has("image")) {
-                JSONObject temp = json.getJSONObject("image");
-                temp = temp.getJSONObject("thumbnail");
-                mImageUrl = temp.getString("contentUrl");
-            }
+            mImageUrl = json.getString("urlToImage");
+//            if(json.has("image")) {
+//                JSONObject temp = json.getJSONObject("image");
+//                temp = temp.getJSONObject("thumbnail");
+//                mImageUrl = temp.getString("contentUrl");
+//            }
 
     }
 

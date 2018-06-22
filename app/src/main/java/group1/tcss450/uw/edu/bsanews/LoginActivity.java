@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +26,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import com.amazonaws.mobile.client.AWSMobileClient; //aws
+import com.amazonaws.mobile.client.AWSStartupHandler;
+import com.amazonaws.mobile.client.AWSStartupResult;
 
 /**
  * THE FIRST ACTIVITY.
@@ -67,6 +71,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //AWS startup code
+        AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
+            @Override
+            public void onComplete(AWSStartupResult awsStartupResult) {
+                Log.d("YourMainActivity", "AWSMobileClient is instantiated and you are connected to AWS!");
+            }
+        }).execute();
+
         setContentView(R.layout.activity_login);
         mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
         mUsername = mPrefs.getString(getString(R.string.UserName),"0");
@@ -105,7 +118,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //mSignInBtn = (Button) findViewById(R.id.email_sign_in_button);
         switch(view.getId()){
             case R.id.email_sign_in_button:
-                attemptLogin(view);
+                //todo without auth!!!
+                goToMainActivity();
+                //todo attemptLogin
+                //attemptLogin(view);
                 break;
             case R.id.login_registerBtn:
                 Intent intent = new Intent(this, RegisterActivity.class);

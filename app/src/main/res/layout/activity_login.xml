@@ -122,5 +122,13 @@
 
         </LinearLayout>
 
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="powered by https://newsapi.org" />
+
 
 </LinearLayout>

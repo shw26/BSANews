@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
      * url to connect to our database.
      */
     private static final String mURL
-            = "https://api.cognitive.microsoft.com/bing/v5.0/news/";
+            = "https://newsapi.org/v2/top-headlines?country=tw&";
     /**
      * allow the asynctask to change the content.
      */
@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * keys for connect to external database.
      */
-    private static  final String mKey = "3abb779da1e740bfab3f95c7fed2475c";
-    private static final String mKey1 = "cbfd463af4de4614af5482ce40870522";
+    private static  final String mKey = "d98aba7b8c75487d9259660c0ad40024";
+    //private static final String mKey1 = "cbfd463af4de4614af5482ce40870522";
     /**
      * SharePref variable
      */
@@ -196,13 +196,13 @@ public class MainActivity extends AppCompatActivity {
             {
 
                 HttpEntity entity;
-
-                URIBuilder builder = new URIBuilder(mURL);
+                String apiKey = "apiKey=" + mKey;
+                URIBuilder builder = new URIBuilder(mURL + apiKey);
 
 
                 URI uri = builder.build();
                 HttpGet request = new HttpGet(uri);
-                request.setHeader("Ocp-Apim-Subscription-Key", mKey);
+                //request.setHeader("Ocp-Apim-Subscription-Key", mKey);
 
 
                 HttpResponse response = httpclient.execute(request);
@@ -239,11 +239,11 @@ public class MainActivity extends AppCompatActivity {
             News[] newses = new News[0];
             try {
                 JSONObject resultObj = new JSONObject(result);
-                JSONArray value = resultObj.getJSONArray("value");
-                newses = new News[value.length()];
+                JSONArray articles = resultObj.getJSONArray("articles");
+                newses = new News[articles.length()];
                 //listItems = new String[value.length()];
-                for (int i = 0; i < value.length(); i++){
-                    JSONObject oneNews = (JSONObject) value.get(i);
+                for (int i = 0; i < articles.length(); i++){
+                    JSONObject oneNews = (JSONObject) articles.get(i);
                     Log.d("LoadFromDB one", oneNews.getString("url"));
                     newses[i] = new News(oneNews);
                     //listItems[i] = newses[i].getName();

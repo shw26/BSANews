@@ -44,12 +44,12 @@ public class CatagoryActivity extends AppCompatActivity implements AdapterView.O
      * url to connect to our database.
      */
     private static final String mURL
-            = "https://api.cognitive.microsoft.com/bing/v5.0/news/";
+            = "https://newsapi.org/v2/top-headlines?country=tw&";
     /**
      * keys for connect to external database.
      */
-    private static  final String mKey = "3abb779da1e740bfab3f95c7fed2475c";
-    private static final String mKey1 = "cbfd463af4de4614af5482ce40870522";
+    private static  final String mKey = "d98aba7b8c75487d9259660c0ad40024";
+    //private static final String mKey1 = "cbfd463af4de4614af5482ce40870522";
 
     /**
      * the key for getting the username.
@@ -186,18 +186,13 @@ public class CatagoryActivity extends AppCompatActivity implements AdapterView.O
             {
 
                 HttpEntity entity;
+                String apiKey = "apiKey=" + mKey;
+                String apiCategory = "category=" + strings[1];
+                URIBuilder builder = new URIBuilder(mURL + apiCategory + "&" + apiKey);
 
-                URIBuilder builder = new URIBuilder(mURL);
-
-                //for catagory
-                builder.setParameter("Category", strings[1]);
-                //set 50 newses
-                builder.setParameter("count", "50");
 
                 URI uri = builder.build();
                 HttpGet request = new HttpGet(uri);
-                request.setHeader("Ocp-Apim-Subscription-Key", mKey);
-
 
                 HttpResponse response = httpclient.execute(request);
                 entity = response.getEntity();
@@ -233,7 +228,7 @@ public class CatagoryActivity extends AppCompatActivity implements AdapterView.O
             News[] newses = new News[0];
             try {
                 JSONObject resultObj = new JSONObject(result);
-                JSONArray value = resultObj.getJSONArray("value");
+                JSONArray value = resultObj.getJSONArray("articles");
                 newses = new News[value.length()];
                 //listItems = new String[value.length()];
                 for (int i = 0; i < value.length(); i++){

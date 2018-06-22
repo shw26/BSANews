@@ -27,36 +27,13 @@
     <string name="title_activity_news_view">BSA News</string>
     <string name="remember_me">Remember Me</string>
     <string-array name="category_options">
-        <item>Business</item>
-        <item>Entertainment</item>
-        <item>Entertainment_MovieAndTV</item>
-        <item>Entertainment_Music</item>
-        <item>Health</item>
-        <item>Politics</item>
-        <item>ScienceAndTechnology</item>
-        <item>Technology</item>
-        <item>Science</item>
-        <item>Sports</item>
-        <item>Sports_Golf</item>
-        <item>Sports_MLB</item>
-        <item>Sports_NBA</item>
-        <item>Sports_NFL</item>
-        <item>Sports_NHL</item>
-        <item>Sports_Soccer</item>
-        <item>Sports_Tennis</item>
-        <item>Sports_CFB</item>
-        <item>Sports_CBB</item>
-        <item>US</item>
-        <item>US_Northeast</item>
-        <item>US_South</item>
-        <item>US_Midwest</item>
-        <item>US_West</item>
-        <item>World</item>
-        <item>World_Africa</item>
-        <item>World_Americas</item>
-        <item>World_Asia</item>
-        <item>World_Europe</item>
-        <item>World_MiddleEast</item>
+        <item>business</item>
+        <item>entertainment</item>
+        <item>health</item>
+        <item>science</item>
+        <item>technology</item>
+        <item>science</item>
+        <item>sports</item>
     </string-array>
 
     <string-array name="DB_COLUMN_NAMES">
