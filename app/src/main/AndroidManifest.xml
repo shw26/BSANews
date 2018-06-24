@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -29,28 +29,41 @@
             android:label="@string/title_activity_login"></activity>
         -->
         <activity android:name=".LoginActivity">
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/main_menu" />
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/register" />
+        <activity
+            android:name=".LoadActivity"
+            android:label="@string/load_saved" />
+        <activity android:name=".SaveActivity" />
+        <activity
+            android:name=".NewsViewActivity"
+            android:label="@string/title_activity_news_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CatagoryActivity"
+            android:label="@string/Categories_button" />
+        <activity
+            android:name=".LoadFromLocalActivity"
+            android:label="@string/load_local_button" />
+        <activity android:name=".AuthenticatorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/main_menu" />
-        <activity android:name=".RegisterActivity"
-            android:label="@string/register"/>
-        <activity android:name=".LoadActivity"
-            android:label="@string/load_saved"/>
-        <activity android:name=".SaveActivity" />
-        <activity
-            android:name=".NewsViewActivity"
-            android:label="@string/title_activity_news_view"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CatagoryActivity"
-            android:label="@string/Categories_button"/>
-        <activity android:name=".LoadFromLocalActivity"
-            android:label="@string/load_local_button"></activity>
     </application>
 
 </manifest>
