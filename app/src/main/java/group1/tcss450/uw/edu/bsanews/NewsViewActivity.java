@@ -15,6 +15,13 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.auth.core.IdentityManager;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
 import group1.tcss450.uw.edu.bsanews.Model.News;
 import group1.tcss450.uw.edu.bsanews.Model.NewsDB;
 import group1.tcss450.uw.edu.bsanews.Model.SaveToDatabase;
@@ -61,6 +68,9 @@ public class NewsViewActivity extends AppCompatActivity {
 
     private String mActivityKey;
 
+    // Declare a DynamoDBMapper object
+    DynamoDBMapper dynamoDBMapper;
+
     /**
      * onCreate, initialize the fields.
      * @param savedInstanceState
@@ -69,6 +79,20 @@ public class NewsViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_view);
+
+
+
+
+
+        // Add code to instantiate a AmazonDynamoDBClient
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AuthenticatorActivity.credentialsProvider);
+
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AuthenticatorActivity.configuration)
+                .build();
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mActivityKey = getIntent().getStringExtra("Activity");
@@ -126,23 +150,28 @@ public class NewsViewActivity extends AppCompatActivity {
 
         switch (id){
             case R.id.save_menu_button:
-                AsyncTask<String, Void, String> task;
 
-                task = new SaveToDatabase(this);
+                createArticle(mWebView.getUrl(), mNews.getName(), mNews.getDescription(), mNews.getImageUrl());
 
-                task.execute(PARTIAL_URL,
-                        mUsername,
-                        mWebView.getUrl(),
-                        mNews.getName(),
-                        mNews.getDescription());
+//                AsyncTask<String, Void, String> task;
+//
+//                task = new SaveToDatabase(this);
+//
+//                task.execute(PARTIAL_URL,
+//                        mUsername,
+//                        mWebView.getUrl(),
+//                        mNews.getName(),
+//                        mNews.getDescription());
                 break;
             case R.id.save_to_local_menu_button:
 
-                if (saveToSqlite(mNews.getName(), mWebView.getUrl(), mNews.getDescription())){
-                    Toast.makeText(this, "Save locally Success.", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(this, "Save locally failed.", Toast.LENGTH_SHORT).show();
-                }
+                createArticle(mWebView.getUrl(), mNews.getName(), mNews.getDescription(), mNews.getImageUrl());
+
+//                if (saveToSqlite(mNews.getName(), mWebView.getUrl(), mNews.getDescription())){
+//                    Toast.makeText(this, "Save locally Success.", Toast.LENGTH_SHORT).show();
+//                }else {
+//                    Toast.makeText(this, "Save locally failed.", Toast.LENGTH_SHORT).show();
+//                }
 
                 break;
             case R.id.news_view_home:
@@ -176,6 +205,23 @@ public class NewsViewActivity extends AppCompatActivity {
             courseDB = new NewsDB(this);
         }
         return courseDB.insertNews(name, url, desc);
+    }
+
+    public void createArticle(String url, String title, String desc, String imgUrl){
+        final ArticleDO articleItem = new ArticleDO();
+
+        articleItem.setUserId(IdentityManager.getDefaultIdentityManager().getCachedUserID());
+        articleItem.setUrlToImage(imgUrl);
+        articleItem.setUrl(url);
+        articleItem.setDescription(desc);
+        articleItem.setTitle(title);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dynamoDBMapper.save(articleItem);
+            }
+        }).start();
     }
 
 }

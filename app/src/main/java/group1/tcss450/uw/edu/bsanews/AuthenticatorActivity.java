@@ -3,12 +3,20 @@ package group1.tcss450.uw.edu.bsanews;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.mobile.auth.ui.SignInUI;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
+import com.amazonaws.mobile.config.AWSConfiguration;
+
+
 
 public class AuthenticatorActivity extends Activity {
+
+    public static AWSCredentialsProvider credentialsProvider;
+    public static AWSConfiguration configuration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,5 +33,8 @@ public class AuthenticatorActivity extends Activity {
                 signin.login(AuthenticatorActivity.this, MainActivity.class).execute();
             }
         }).execute();
+
+        credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
+        configuration = AWSMobileClient.getInstance().getConfiguration();
     }
 }
