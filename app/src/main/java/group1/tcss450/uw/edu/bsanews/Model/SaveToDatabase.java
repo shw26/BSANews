@@ -5,6 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.auth.core.IdentityManager;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +16,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import group1.tcss450.uw.edu.bsanews.ArticleDO;
+import group1.tcss450.uw.edu.bsanews.AuthenticatorActivity;
 
 /**
  * provide service for saving a news.
@@ -26,57 +33,80 @@ public class SaveToDatabase extends AsyncTask<String, Void, String> {
      */
     private AppCompatActivity mActivity;
 
+    // Declare a DynamoDBMapper object
+    DynamoDBMapper dynamoDBMapper;
+
     /**
      * constructor, takes a activity as argument for showing toast.
      * @param activity
      */
     public SaveToDatabase(AppCompatActivity activity){
         mActivity = activity;
+
+        // Add code to instantiate a AmazonDynamoDBClient
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AuthenticatorActivity.credentialsProvider);
+
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AuthenticatorActivity.configuration)
+                .build();
     }
 
     @Override
     protected String doInBackground(String... strings) {
 
-        if (strings.length != 5) {
-            throw new IllegalArgumentException("five String arguments required.");
+        if (strings.length != 4) {
+            throw new IllegalArgumentException("4 String arguments required.");
         }
+
         String response = "";
-        HttpURLConnection urlConnection = null;
-        String url = strings[0];
         try {
-            URL urlObject = new URL(url + SERVICE);
-            urlConnection = (HttpURLConnection) urlObject.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-
-            String data = URLEncoder.encode("my_name", "UTF-8")
-                    + "=" + URLEncoder.encode(strings[1], "UTF-8")
-                    + "&" + URLEncoder.encode("my_url", "UTF-8")
-                    + "=" + URLEncoder.encode(strings[2],"UTF-8")
-                    + "&" + URLEncoder.encode("my_title", "UTF-8")
-                    + "=" + URLEncoder.encode(strings[3],"UTF-8")
-                    + "&" + URLEncoder.encode("my_description", "UTF-8")
-                    + "=" + URLEncoder.encode(strings[4],"UTF-8");
-            wr.write(data);
-            wr.flush();
-
-            InputStream content = urlConnection.getInputStream();
-
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-            String s = "";
-            while ((s = buffer.readLine()) != null) {
-                response += s;
-            }
-        } catch (Exception e) {
-            response = "Unable to connect, Reason: "
+            createArticle(strings[0], strings[1], strings[2], strings[3]);
+        }catch (Exception e){
+            response = "Unable to save, Reason: "
                     + e.getMessage();
-        } finally {
-            if (urlConnection != null)
-                urlConnection.disconnect();
         }
 
+        //old version.
+//        String response = "";
+//        HttpURLConnection urlConnection = null;
+//        String url = strings[0];
+//        try {
+//            URL urlObject = new URL(url + SERVICE);
+//            urlConnection = (HttpURLConnection) urlObject.openConnection();
+//            urlConnection.setRequestMethod("POST");
+//            urlConnection.setDoOutput(true);
+//            OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+//
+//            String data = URLEncoder.encode("my_name", "UTF-8")
+//                    + "=" + URLEncoder.encode(strings[1], "UTF-8")
+//                    + "&" + URLEncoder.encode("my_url", "UTF-8")
+//                    + "=" + URLEncoder.encode(strings[2],"UTF-8")
+//                    + "&" + URLEncoder.encode("my_title", "UTF-8")
+//                    + "=" + URLEncoder.encode(strings[3],"UTF-8")
+//                    + "&" + URLEncoder.encode("my_description", "UTF-8")
+//                    + "=" + URLEncoder.encode(strings[4],"UTF-8");
+//            wr.write(data);
+//            wr.flush();
+//
+//            InputStream content = urlConnection.getInputStream();
+//
+//            BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+//            String s = "";
+//            while ((s = buffer.readLine()) != null) {
+//                response += s;
+//            }
+//        } catch (Exception e) {
+//            response = "Unable to connect, Reason: "
+//                    + e.getMessage();
+//        } finally {
+//            if (urlConnection != null)
+//                urlConnection.disconnect();
+//        }
 
+        if(response.equals("")){
+            response = "true";
+        }
         Log.d("SaveToDatabase", "response: " + response);
 
         return response;
@@ -105,6 +135,23 @@ public class SaveToDatabase extends AsyncTask<String, Void, String> {
             Log.e("SavetoDB",result);
         }
 
+    }
+
+    private void createArticle(String url, String title, String desc, String imgUrl){
+        final ArticleDO articleItem = new ArticleDO();
+
+        articleItem.setUserId(IdentityManager.getDefaultIdentityManager().getCachedUserID());
+        articleItem.setUrlToImage(imgUrl);
+        articleItem.setUrl(url);
+        articleItem.setDescription(desc);
+        articleItem.setTitle(title);
+        dynamoDBMapper.save(articleItem);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                dynamoDBMapper.save(articleItem);
+//            }
+//        }).start();
     }
 
 }

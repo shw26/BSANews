@@ -68,9 +68,6 @@ public class NewsViewActivity extends AppCompatActivity {
 
     private String mActivityKey;
 
-    // Declare a DynamoDBMapper object
-    DynamoDBMapper dynamoDBMapper;
-
     /**
      * onCreate, initialize the fields.
      * @param savedInstanceState
@@ -79,18 +76,6 @@ public class NewsViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_view);
-
-
-
-
-
-        // Add code to instantiate a AmazonDynamoDBClient
-        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AuthenticatorActivity.credentialsProvider);
-
-        this.dynamoDBMapper = DynamoDBMapper.builder()
-                .dynamoDBClient(dynamoDBClient)
-                .awsConfiguration(AuthenticatorActivity.configuration)
-                .build();
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -134,7 +119,9 @@ public class NewsViewActivity extends AppCompatActivity {
         //mMenu = menu;
         if (mUsername == null){
             MenuItem item = menu.findItem(R.id.save_menu_button);
-            item.setVisible(false);
+            //todo this needs to be fix.
+            //item.setVisible(false);
+            item.setVisible(true);
         }
         return true;
     }
@@ -151,12 +138,16 @@ public class NewsViewActivity extends AppCompatActivity {
         switch (id){
             case R.id.save_menu_button:
 
-                createArticle(mWebView.getUrl(), mNews.getName(), mNews.getDescription(), mNews.getImageUrl());
 
-//                AsyncTask<String, Void, String> task;
-//
-//                task = new SaveToDatabase(this);
-//
+                AsyncTask<String, Void, String> task;
+
+                task = new SaveToDatabase(this);
+                task.execute(mWebView.getUrl(),
+                        mNews.getName(),
+                        mNews.getDescription(),
+                        mNews.getImageUrl());
+
+                //old version using php.
 //                task.execute(PARTIAL_URL,
 //                        mUsername,
 //                        mWebView.getUrl(),
@@ -165,13 +156,12 @@ public class NewsViewActivity extends AppCompatActivity {
                 break;
             case R.id.save_to_local_menu_button:
 
-                createArticle(mWebView.getUrl(), mNews.getName(), mNews.getDescription(), mNews.getImageUrl());
 
-//                if (saveToSqlite(mNews.getName(), mWebView.getUrl(), mNews.getDescription())){
-//                    Toast.makeText(this, "Save locally Success.", Toast.LENGTH_SHORT).show();
-//                }else {
-//                    Toast.makeText(this, "Save locally failed.", Toast.LENGTH_SHORT).show();
-//                }
+                if (saveToSqlite(mNews.getName(), mWebView.getUrl(), mNews.getDescription())){
+                    Toast.makeText(this, "Save locally Success.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "Save locally failed.", Toast.LENGTH_SHORT).show();
+                }
 
                 break;
             case R.id.news_view_home:
@@ -207,21 +197,5 @@ public class NewsViewActivity extends AppCompatActivity {
         return courseDB.insertNews(name, url, desc);
     }
 
-    public void createArticle(String url, String title, String desc, String imgUrl){
-        final ArticleDO articleItem = new ArticleDO();
-
-        articleItem.setUserId(IdentityManager.getDefaultIdentityManager().getCachedUserID());
-        articleItem.setUrlToImage(imgUrl);
-        articleItem.setUrl(url);
-        articleItem.setDescription(desc);
-        articleItem.setTitle(title);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                dynamoDBMapper.save(articleItem);
-            }
-        }).start();
-    }
 
 }
