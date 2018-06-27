@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import group1.tcss450.uw.edu.bsanews.ArticleDO;
+
 /**
  * News object
  * Created by jnbui on 2/22/2017.
@@ -40,6 +42,25 @@ public class News implements Serializable {
     public News(JSONObject json)  throws JSONException{
         create(json);
 //        getNews(json);
+    }
+
+    /**
+     * create News Obj by ArticleDO.
+     * @param articleDO
+     */
+    public News(ArticleDO articleDO){
+        createByArticleDO(articleDO);
+    }
+
+    /**
+     * helper function to create News Obj by ArticleDO.
+     * @param articleDO
+     */
+    private void createByArticleDO(ArticleDO articleDO){
+        mName = articleDO.getTitle();
+        mUrl = articleDO.getUrl();
+        mDescription = articleDO.getDescription();
+        mImageUrl = articleDO.getUrlToImage();
     }
 
     /**

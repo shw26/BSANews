@@ -34,7 +34,7 @@ public class SaveToDatabase extends AsyncTask<String, Void, String> {
     private AppCompatActivity mActivity;
 
     // Declare a DynamoDBMapper object
-    DynamoDBMapper dynamoDBMapper;
+    private DynamoDBMapper dynamoDBMapper;
 
     /**
      * constructor, takes a activity as argument for showing toast.
@@ -68,6 +68,11 @@ public class SaveToDatabase extends AsyncTask<String, Void, String> {
         }
 
         //old version.
+//        if (strings.length != 5) {
+//            throw new IllegalArgumentException("5 String arguments required.");
+//        }
+//
+//        String response = "";
 //        String response = "";
 //        HttpURLConnection urlConnection = null;
 //        String url = strings[0];
@@ -146,6 +151,9 @@ public class SaveToDatabase extends AsyncTask<String, Void, String> {
         articleItem.setDescription(desc);
         articleItem.setTitle(title);
         dynamoDBMapper.save(articleItem);
+
+
+
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {

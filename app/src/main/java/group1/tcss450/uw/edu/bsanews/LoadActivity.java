@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
 import group1.tcss450.uw.edu.bsanews.Model.LoadFromDatabase;
 
@@ -48,7 +49,7 @@ public class LoadActivity extends AppCompatActivity implements Serializable{
         setContentView(R.layout.activity_load);
         mUsername = getIntent().getStringExtra(KEY_USERNAME);
         loadAct = this;
-        AsyncTask<String, Void, String> task =null;
+        AsyncTask<String, Void, List<ArticleDO>> task =null;
         task = new LoadFromDatabase(this, mUsername);
 
         task.execute(PARTIAL_URL, mUsername);
