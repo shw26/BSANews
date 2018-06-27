@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.auth.core.IdentityManager;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -109,7 +111,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void logout() {
         mPrefs.edit().putString(getString(R.string.UserName),"0").apply();
-        Intent intent = new Intent(this, LoginActivity.class);
+
+        //logout from aws
+        IdentityManager.getDefaultIdentityManager().signOut();
+
+        Intent intent = new Intent(this, AuthenticatorActivity.class);
+//        Intent intent = new Intent(this, LoginActivity.class);
+
        // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
