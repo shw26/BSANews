@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.logout, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
     /**
@@ -143,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.Log_out_item) {
             logout();
+        } else if (id == R.id.about){
+            Toast.makeText(this, "This app is powered by Newsapi.org", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);

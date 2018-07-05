@@ -1,9 +1,11 @@
 package group1.tcss450.uw.edu.bsanews;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.auth.ui.AuthUIConfiguration;
 import com.amazonaws.mobile.auth.ui.SignInUI;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
@@ -26,11 +28,19 @@ public class AuthenticatorActivity extends Activity {
         AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
             @Override
             public void onComplete(AWSStartupResult awsStartupResult) {
-
+                AuthUIConfiguration config =
+                        new AuthUIConfiguration.Builder()
+                                .userPools(true)
+                                .logoResId(R.mipmap.ic_launcher)
+                                .backgroundColor(Color.BLUE)
+                                .isBackgroundColorFullScreen(true)
+                                .fontFamily("sans-serif-light")
+                                .canCancel(true)
+                                .build();
 
 
                 SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(AuthenticatorActivity.this, SignInUI.class);
-                signin.login(AuthenticatorActivity.this, MainActivity.class).execute();
+                signin.login(AuthenticatorActivity.this, MainActivity.class).authUIConfiguration(config).execute();
             }
         }).execute();
 
